@@ -73,9 +73,9 @@ class PluginConfigmanagerCommon extends CommonDBTM {
       }
 
       $query .= "PRIMARY KEY  (`" . self::getIndexName() . "`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-      if(! TableExists($table)) {
+      if(! $DB->TableExists($table)) {
          $DB->queryOrDie($query, $DB->error());
       }
    }
@@ -88,7 +88,7 @@ class PluginConfigmanagerCommon extends CommonDBTM {
       global $DB;
       $table = self::getTable();
 
-      if(TableExists($table)) {
+      if($DB->TableExists($table)) {
          $query = "DROP TABLE `$table`";
          $DB->queryOrDie($query, $DB->error());
       }
@@ -137,11 +137,25 @@ class PluginConfigmanagerCommon extends CommonDBTM {
    }
 
    /**
+    * @inheritdoc
+    */
+   static final function canUpdate() {
+      return true;
+   }
+
+   /**
+    * @inheritdoc
+    */
+   static final function canDelete() {
+      return true;
+   }
+
+   /**
     * Generic function testing right on a single configuration line or rule.
     * It's only a generic version of canViewItem and canCreateItem
     * @param string $type Configuration type
     * @param integer $type_id id GLPI object related to this configuration line/rule
-    * @param string $right 'r' or 'w' for read or write right
+    * @param integer $right READ or UPDATE for read or write right
     * @return boolean l'utilisateur courant a-t-il le droit demandé
     */
    protected static final function canItemStatic($type, $type_id, $right) {
@@ -167,21 +181,28 @@ class PluginConfigmanagerCommon extends CommonDBTM {
     * @inheritdoc
     */
    final function canViewItem() {
-      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], 'r');
+      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], READ);
    }
 
    /**
     * @inheritdoc
     */
    final function canCreateItem() {
-      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], 'w');
+      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], CREATE);
    }
 
     /**
     * @inheritdoc
     */
     final function canUpdateItem() {
-      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], 'r');
+      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], UPDATE);
+   }
+
+   /**
+    * @inheritdoc
+    */
+   final function canDeleteItem() {
+      return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], DELETE);
    }
 
    /**

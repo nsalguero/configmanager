@@ -12,10 +12,10 @@ if(isset($_POST['update']) && isset($_POST['config__object_name']) &&
 
    if($_POST['id'] == -1) {
       unset($_POST['id']);
-      $config->check(-1,'w', $_POST);
+      $config->check(-1, UPDATE, $_POST);
       $config->add($_POST);
    } else {
-      $config->check($_POST['id'],'w');
+      $config->check($_POST['id'], UPDATE);
       $config->update($_POST);
    }
 }

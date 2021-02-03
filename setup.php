@@ -6,11 +6,11 @@
  */
 function plugin_version_configmanager() {
    return array('name' => "ConfigManager",
-         'version' => '1.0.1',
+         'version' => '1.2.0',
          'author' => 'Etiennef',
          'license' => 'GPLv2+',
          'homepage' => 'https://github.com/Etiennef/configmanager',
-         'minGlpiVersion' => '0.84');
+         'minGlpiVersion' => '9.5');
 }
 
 /**
@@ -18,8 +18,8 @@ function plugin_version_configmanager() {
  * @return boolean le plugin peut s'exécuter sur ce GLPI
  */
 function plugin_configmanager_check_prerequisites() {
-   if (version_compare(GLPI_VERSION,'0.84.8','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
-      echo __("Plugin has been tested only for GLPI 0.84.8", 'configmanager');
+   if (version_compare(GLPI_VERSION,'9.5','lt') || version_compare(GLPI_VERSION,'9.6','ge')) {
+      echo __("Plugin has been tested only for GLPI 9.5", 'configmanager');
       return false;
    }
    return true;

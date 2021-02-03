@@ -47,7 +47,7 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
          }
 
          $config = new static();
-         if($config->getFromDBByQuery("WHERE `config__type`='$type' AND `config__type_id`='$type_id'")) {
+         if($config->getFromDBByCrit(['AND' => ['config__type' => $type, 'config__type_id' => $type_id]])) {
             $_configs_instances[get_called_class()][$type][$type_id] = $config->fields;
          } else {
             $_configs_instances[get_called_class()][$type][$type_id] = false;
@@ -62,7 +62,7 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
     * @param array(string) $values valeurs de type_id à utiliser pour lire les configurations héritées (devinées si non précisées)
     * @return array tableau représentant la configuration
     */
-   public final static function getConfigValues($values=array()) {
+   public static function getConfigValues($values=array()) {
       $configObject = new static();
 
       // lit dans la DB les configs susceptibles de s'appliquer
@@ -177,10 +177,10 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
     * @return boolean
     */
    protected static final function showFormStatic($type, $type_id) {
-      if(! self::canItemStatic($type, $type_id, 'r')) {
+      if(! self::canItemStatic($type, $type_id, READ)) {
          return false;
       }
-      $can_write = self::canItemStatic($type, $type_id, 'w');
+      $can_write = self::canItemStatic($type, $type_id, UPDATE);
 
       // lecture des données à afficher
       $config = self::getFromDBStaticNoInherit($type, $type_id);
@@ -259,8 +259,7 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
 
       $options = array(
          'multiple' => isset($desc['multiple']) && $desc['multiple'],
-         'size' => isset($desc['size']) ? $desc['size'] : 1,
-         'mark_unmark_all' => isset($desc['mark_unmark_all']) && $desc['mark_unmark_all'],
+         'width' =>  isset($desc['width']) ? $desc['width'] : ''
       );
 
       $choices = $desc['values'];
@@ -310,7 +309,7 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
 
             echo $inheritText . ' <input type="checkbox" id="'.$chkid.'" '. ($doesinherit ? 'checked' : '') .'><br>';
             echo '<input type="hidden" id="'.$txtid.'_inherit" value="'.self::INHERIT_VALUE.'" name="'.$param.'" '. (!$doesinherit ? 'disabled' : '') .'>';
-            echo '<input type="text" id="'.$txtid.'_value" value="'. ($doesinherit ? '' : Html::cleanInputText($value)) .'" name="'.$param.'" size="'.$size.'" maxlength="'.$maxlength.'" '. ($doesinherit ? 'disabled' : '') .'>';
+            echo '<input type="text" id="'.$txtid.'_value" value="'. ($doesinherit ? '' : Html::cleanInputText($value)) .'" name="'.$param.'" size="'.$size.'" maxlength="'.$maxlength.'" '. ($doesinherit ? 'disabled style="display: none;"' : '') .'>';
 
             // Ajout du script permettant de basculer l'activation des champs de saisie
             self::showCheckboxJs($chkid, $txtid);
@@ -351,7 +350,7 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
 
             echo $inheritText . ' <input type="checkbox" id="'.$chkid.'" '. ($doesinherit ? 'checked' : '') .'><br>';
             echo '<input type="hidden" id="'.$txtid.'_inherit" value="'.self::INHERIT_VALUE.'" name="'.$param.'" '. (!$doesinherit ? 'disabled' : '') .'>';
-            echo '<textarea id="'.$txtid.'_value" name="'.$param.'" rows="'.$rows.'" cols="'.$cols.'" maxlength="'.$maxlength.'" '.($doesinherit ? 'disabled' : '').' style="resize:'.$resize.'">' . ($doesinherit ? '' : Html::cleanPostForTextArea($value)) . '</textarea>';
+            echo '<textarea id="'.$txtid.'_value" name="'.$param.'" rows="'.$rows.'" cols="'.$cols.'" maxlength="'.$maxlength.'" '.($doesinherit ? 'disabled style="display: none;"' : '').' style="resize:'.$resize.'">' . ($doesinherit ? '' : Html::cleanPostForTextArea($value)) . '</textarea>';
 
             // Ajout du script permettant de basculer l'activation des champs de saisie
             self::showCheckboxJs($chkid, $txtid);
@@ -375,14 +374,14 @@ class PluginConfigmanagerConfig extends PluginConfigmanagerCommon {
     */
    private final static function showCheckboxJs($chkid, $txtid) {
       echo "<script>
-         Ext.get($chkid).addListener('change',function(ev, el){
-         var todisable = el.checked ? '{$txtid}_value' : '{$txtid}_inherit';
-         var toenable = el.checked ? '{$txtid}_inherit' : '{$txtid}_value';
+      $('#$chkid').on('change',function(ev, el){
+         var todisable = ev.target.checked ? '#{$txtid}_value' : '#{$txtid}_inherit';
+         var toenable = ev.target.checked ? '#{$txtid}_inherit' : '#{$txtid}_value';
 
-         Ext.get(todisable).set({'disabled' : ''});
-         Ext.get(toenable).set({'disabled' : null}, false);
-         });
-         </script>";
+         $(todisable).prop('disabled', true).hide();
+         $(toenable).prop('disabled', false).show();
+      });
+      </script>";
    }
 
    /**
