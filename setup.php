@@ -7,9 +7,9 @@
 function plugin_version_configmanager() {
    return array('name' => "ConfigManager",
          'version' => '1.2.0',
-         'author' => 'Etiennef',
+         'author' => 'Etiennef, Nicolas Salguero',
          'license' => 'GPLv2+',
-         'homepage' => 'https://github.com/Etiennef/configmanager',
+         'homepage' => 'https://github.com/nsalguero/configmanager',
          'minGlpiVersion' => '9.5');
 }
 
