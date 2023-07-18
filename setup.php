@@ -6,7 +6,7 @@
  */
 function plugin_version_configmanager() {
    return array('name' => "ConfigManager",
-         'version' => '1.2.0',
+         'version' => '1.2.1',
          'author' => 'Etiennef, Nicolas Salguero',
          'license' => 'GPLv2+',
          'homepage' => 'https://github.com/nsalguero/configmanager',
@@ -18,8 +18,8 @@ function plugin_version_configmanager() {
  * @return boolean le plugin peut s'exécuter sur ce GLPI
  */
 function plugin_configmanager_check_prerequisites() {
-   if (version_compare(GLPI_VERSION,'9.5','lt') || version_compare(GLPI_VERSION,'9.6','ge')) {
-      echo __("Plugin has been tested only for GLPI 9.5", 'configmanager');
+   if (version_compare(GLPI_VERSION,'9.5','lt') || version_compare(GLPI_VERSION,'10.1','ge')) {
+      echo __("Plugin has been tested only for GLPI 9.5 and 10", 'configmanager');
       return false;
    }
    return true;
