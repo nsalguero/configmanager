@@ -125,28 +125,28 @@ class PluginConfigmanagerCommon extends CommonDBTM {
     /**
     * @inheritdoc
     */
-    static final function canView() {
+    static final function canView(): bool {
       return true;
    }
 
    /**
     * @inheritdoc
     */
-   static final function canCreate() {
+   static final function canCreate(): bool {
       return true;
    }
 
    /**
     * @inheritdoc
     */
-   static final function canUpdate() {
+   static final function canUpdate(): bool {
       return true;
    }
 
    /**
     * @inheritdoc
     */
-   static final function canDelete() {
+   static final function canDelete(): bool {
       return true;
    }
 
@@ -180,28 +180,28 @@ class PluginConfigmanagerCommon extends CommonDBTM {
    /**
     * @inheritdoc
     */
-   final function canViewItem() {
+   final function canViewItem(): bool {
       return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], READ);
    }
 
    /**
     * @inheritdoc
     */
-   final function canCreateItem() {
+   final function canCreateItem(): bool {
       return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], CREATE);
    }
 
     /**
     * @inheritdoc
     */
-    final function canUpdateItem() {
+    final function canUpdateItem(): bool {
       return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], UPDATE);
    }
 
    /**
     * @inheritdoc
     */
-   final function canDeleteItem() {
+   final function canDeleteItem(): bool {
       return self::canItemStatic($this->fields['config__type'], $this->fields['config__type_id'], DELETE);
    }
 
